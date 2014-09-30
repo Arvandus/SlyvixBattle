@@ -1,0 +1,95 @@
+<html>
+ <head>
+  <meta charset="utf-8"/>
+  <script type="application/javascript">
+
+var backText = 'Welcome to version .01 of Slyvix battle. A simple game you should be able to do in a few minutes.';
+
+//object determines Slyvix
+  var slyvix = {
+  might : 0,
+  stealth : 0,
+  psyche : 0
+  }
+//object determines enemies
+  var enemy = {
+  might : 0,
+  stealth : 0,
+  psyche : 0
+  }
+
+//wraps text in box. allowing for paragraphs
+function wrapText(context, text, x, y, maxWidth, lineHeight) {
+       var words = text.split(' ');
+        var line = '';
+
+        for(var n = 0; n < words.length; n++) {
+          var testLine = line + words[n] + ' ';
+          var metrics = context.measureText(testLine);
+          var testWidth = metrics.width;
+          if (testWidth > maxWidth && n > 0) {
+            context.fillText(line, x, y);
+            line = words[n] + ' ';
+            y += lineHeight;
+          }
+          else {
+            line = testLine;
+          }
+        } 
+        context.fillText(line, x, y);
+      }
+
+//draws the canvas
+    function draw() {
+        var canvas = document.getElementById("canvas");
+      //if (canvas.getContext) {
+        var ctx = canvas.getContext("2d");
+        var y = 60;
+        var maxWidth = 400;
+        var lineHeight = 25;
+        var x = (canvas.width - maxWidth) / 2;
+        var fight_button = new Image();
+        var stealth_button = new Image();
+        var psych_button = new Image();
+        fight_button.src = "pics/Fight_Button.png";
+        stealth_button.src = "pics/Stealth_Button.png";
+        psych_button.src = "pics/Psych_Button.png";
+
+        //main screen
+        ctx.fillRect (50, 25, 500, 200);
+        //Slyvix Screen
+        ctx.fillRect (50, 250, 125,125);
+        //Enemy Screen
+        ctx.fillRect (425, 250, 125,125);
+
+        //display text on main screen
+        ctx.font="16px Arial";
+        ctx.fillStyle = "Red";
+        wrapText(ctx, backText, x, y, maxWidth, lineHeight);
+
+
+        //load button images
+        fight_button.onload = function() {
+        ctx.drawImage(fight_button,275,250);
+        }
+
+        stealth_button.onload = function() {
+        ctx.drawImage(stealth_button,275,300);
+        }
+
+        psych_button.onload = function() {
+        ctx.drawImage(psych_button,275,350);
+        }
+
+      //}
+    }
+
+  </script>
+ </head>
+ <body bgcolor="#c8e8eb" onload="draw();">
+  <div style="width:600px; height:400px; margin: 0 auto; padding: 5px;">
+   <canvas id="canvas" width="600"; height="400"; style= "border:1px 
+   solid black"></canvas>
+ </div>
+ </body>
+</html>
