@@ -11,7 +11,8 @@
 
   <script type="application/javascript">
 
-var backText = 'Welcome to version .01 of Slyvix battle. A simple game you should be able to do in a few minutes.';
+var backText = "";
+var battle = 0;
 
 //object determines Slyvix
   var slyvix = {
@@ -26,11 +27,32 @@ var backText = 'Welcome to version .01 of Slyvix battle. A simple game you shoul
   psyche : 0
   }
 
-function int(){
-        ctx.font="16px Arial";
-        ctx.fillStyle = "Red";
-        backText = "word testing is the way to be. GIJOE";
+function intit(context, text, x, y, maxWidth, lineHeight){
+          //main screen
+        context.fillStyle = "White";
+        context.fillRect (50, 25, 500, 200);
+        //Slyvix Screen
+        context.fillRect (50, 250, 125,125);
+        //Enemy Screen
+        context.fillRect (425, 250, 125,125);
+        context.font="16px Arial";
+        context.fillStyle = "Red";
+        text = "Welcome to version .01 of Slyvix battle. A simple game you should be able to do in a few minutes. Each game, you will face a random enemy of the shadowlabyrinth as SLyvix. Good luck.";
+        wrapText(context, text, x, y, maxWidth, lineHeight);
   //initiates the screen for the canvas
+}
+
+function eraseMainScreen(context){
+        context.clearRect(50, 25, 500, 200);
+        context.fillStyle = "White";
+        context.fillRect (50, 25, 500, 200);
+}
+
+function gameMain(){
+  while(battle <= 3){
+    aWildAppears();
+    battle++;
+  }
 }
 
 function compareStats(slyvixStat, enemyStat){
@@ -46,6 +68,9 @@ function enemyStats(){
   //produce enemy stats
 }
 
+function diceRoll(){
+  var randomNumber = Math.floor(Math.random() * 5) +1;
+}
 
 function aWildAppears(){
   var enemy = "squigbomb";
@@ -86,33 +111,25 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
         var maxWidth = 400;
         var lineHeight = 25;
         var x = (canvas.width - maxWidth) / 2;
+        intit(ctx, backText, x, y, maxWidth, lineHeight);
+
+        gameMain();
+
+        //Custom Buttons
         //var fight_button = new Image();
         //var stealth_button = new Image();
         //var psych_button = new Image();
-        int();
         //fight_button.src = "pics/Fight_Button.png";
         //stealth_button.src = "pics/Stealth_Button.png";
         //psych_button.src = "pics/Psych_Button.png";
-
-        //main screen
-        ctx.fillStyle = "White";
-        ctx.fillRect (50, 25, 500, 200);
-        //Slyvix Screen
-        ctx.fillRect (50, 250, 125,125);
-        //Enemy Screen
-        ctx.fillRect (425, 250, 125,125);
-
-
         //load button images
         /*
         fight_button.onload = function() {
         ctx.drawImage(fight_button,275,250);
         }
-
         stealth_button.onload = function() {
         ctx.drawImage(stealth_button,275,300);
         }
-
         psych_button.onload = function() {
         ctx.drawImage(psych_button,275,350);
         }
@@ -121,8 +138,14 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
         //display text on main screen
         ctx.font="16px Arial";
         ctx.fillStyle = "Red";
-        //aWildAppears();
+      
+        eraseMainScreen(ctx);
+
+        ctx.font="16px Arial";
+        ctx.fillStyle = "Red";
+        
         wrapText(ctx, backText, x, y, maxWidth, lineHeight);
+        //ctx.fillText()
 
       //}
     }
@@ -133,6 +156,18 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
   <div style="width:600px; height:400px; margin: 0 auto; padding: 5px;">
    <canvas id="canvas" width="600"; height="400"; style= "border:1px 
    solid black; background-color:#0B0B3B; border-radius:25px;"></canvas>
+
+    <div style="position:relative; top:-100; left:260">
+        <input type="button" value=" Battle " onclick="aWildAppears()">
+    </div>
+    <div style="position:relative; top:-100; left:200">
+        <input type="button" value=" Fight " onclick="incr()">
+        <input type="button" value=" Sneak " onclick="decr()">
+        <input type="button" value=" Psych " onclick="decr()">
+    </div>
+
  </div>
+ <!-- float inputs over canvas -->
+
  </body>
 </html>
