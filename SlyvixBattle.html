@@ -13,39 +13,57 @@
 
 var backText = "";
 var battle = 0;
+var canvas, ctx, x, y, enemypool, maxWidth, lineHeight;  
+var enemy_pic = new Image();
+var slyvix_pic = new Image();
+var enemy = ["squigbomb","cat"];
+var ability = ["squigbomb","dog","cats","person"];
+var stat = ["Fight","Stealth","Psych"];
 
 //object determines Slyvix
   var slyvix = {
   might : 0,
   stealth : 0,
-  psyche : 0
+  psych : 0,
+  photo : "pics/SlyvixBest.jpg"
   }
 //object determines enemies
   var enemy = {
   might : 0,
   stealth : 0,
-  psyche : 0
+  psych : 0,
+  photo : "pics/SquigBomb.png"
   }
 
-function intit(context, text, x, y, maxWidth, lineHeight){
+//initiates the screen for the canvas
+function intit(){
+        canvas = document.getElementById("canvas");
+        ctx = canvas.getContext("2d");
+        y = 60;
+        maxWidth = 400;
+        lineHeight = 25;
+        enemypool = 0;
+        x = (canvas.width - maxWidth) / 2;
           //main screen
-        context.fillStyle = "White";
-        context.fillRect (50, 25, 500, 200);
+        ctx.fillStyle = "White";
+        ctx.fillRect (50, 25, 500, 200);
         //Slyvix Screen
-        context.fillRect (50, 250, 125,125);
+        slyvix_pic.src = slyvix.photo;
+        ctx.drawImage(slyvix_pic,50,250);
         //Enemy Screen
-        context.fillRect (425, 250, 125,125);
-        context.font="16px Arial";
-        context.fillStyle = "Red";
+        ctx.fillRect (425, 250, 125,125);
+        ctx.font="16px Arial";
+        ctx.fillStyle = "Red";
         text = "Welcome to version .01 of Slyvix battle. A simple game you should be able to do in a few minutes. Each game, you will face a random enemy of the shadowlabyrinth as SLyvix. Good luck.";
-        wrapText(context, text, x, y, maxWidth, lineHeight);
-  //initiates the screen for the canvas
+        wrapText(text);
 }
 
-function eraseMainScreen(context){
-        context.clearRect(50, 25, 500, 200);
-        context.fillStyle = "White";
-        context.fillRect (50, 25, 500, 200);
+function eraseScreens(){
+        // Main text screen
+        ctx.fillStyle = "White";
+        ctx.clearRect(50,25,500,200);
+        ctx.fillRect(50,25,500,200);
+
 }
 
 function gameMain(){
@@ -55,8 +73,17 @@ function gameMain(){
   }
 }
 
-function compareStats(slyvixStat, enemyStat){
-//include d6 function
+function compareStats(enemyStat, slyvixStat){
+if (enemyStat + diceRoll() === slyvixStat + diceRoll()){
+  text = "they are equal";
+}
+  else if (enemyStat + diceRoll() > slyvixStat + diceRoll()){
+    text = "EnemyStronger";
+  }
+  else{
+    text = "Slyvix wins"
+  }
+  wrapText(text);
 }
 
 function raiseSlyvix( ) {
@@ -64,32 +91,49 @@ function raiseSlyvix( ) {
 // then clear stat list.
 }
 
-function enemyStats(){
+function createEnemyStats(){
+  enemy.might = 1;
+  enemy.stealth = 1;
+  enemy.psych = 1;
+
   //produce enemy stats
 }
 
 function diceRoll(){
   var randomNumber = Math.floor(Math.random() * 5) +1;
+  return randomNumber;
+}
+
+function arrayRoll(x){
+  var stuff = Math.floor(Math.random() * x);
+  return stuff;
 }
 
 function aWildAppears(){
-  var enemy = "squigbomb";
-  var ability = "bomb power";
-  var stat = "sneak";
-  backText = "A wild " + enemy + " has appeared in front of slyvix." + "its " + ability + " makes it immune to " + stat + "."
+  var chosenEnemy = enemy[arrayRoll(enemy.length)];
+  var chosenAbility = ability[arrayRoll(ability.length)];
+  var chosenStat = stat[arrayRoll(stat.length)];
+  ctx.clearRect (425,250,125,125);
+  enemy_pic.src = enemy.photo;
+  ctx.drawImage(enemy_pic,425,250);
+  backText = "A wild " + chosenEnemy + " has appeared in front of slyvix." + "its " + chosenAbility + " makes it immune to " + chosenStat + "."
+  wrapText(backText);
 }
 
 //wraps text in box. allowing for paragraphs
-function wrapText(context, text, x, y, maxWidth, lineHeight) {
+function wrapText(text) {
+      eraseScreens();
+      ctx.font="16px Arial";
+      ctx.fillStyle = "Red";
        var words = text.split(' ');
         var line = '';
 
         for(var n = 0; n < words.length; n++) {
           var testLine = line + words[n] + ' ';
-          var metrics = context.measureText(testLine);
+          var metrics = ctx.measureText(testLine);
           var testWidth = metrics.width;
           if (testWidth > maxWidth && n > 0) {
-            context.fillText(line, x, y);
+            ctx.fillText(line, x, y);
             line = words[n] + ' ';
             y += lineHeight;
           }
@@ -97,23 +141,17 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
             line = testLine;
           }
         } 
-        context.fillText(line, x, y);
+        ctx.fillText(line,x,y);
+        y = 60;
       }
 
 
 
 //draws the canvas
     function draw() {
-        var canvas = document.getElementById("canvas");
-      //if (canvas.getContext) {
-        var ctx = canvas.getContext("2d");
-        var y = 60;
-        var maxWidth = 400;
-        var lineHeight = 25;
-        var x = (canvas.width - maxWidth) / 2;
-        intit(ctx, backText, x, y, maxWidth, lineHeight);
-
-        gameMain();
+      intit();
+      //wrapText(ctx, aWildAppears(), x, y, maxWidth, lineHeight);
+       // gameMain();
 
         //Custom Buttons
         //var fight_button = new Image();
@@ -135,16 +173,15 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
         }
         */
 
-        //display text on main screen
-        ctx.font="16px Arial";
-        ctx.fillStyle = "Red";
-      
-        eraseMainScreen(ctx);
 
-        ctx.font="16px Arial";
-        ctx.fillStyle = "Red";
+        //display text on main screen
+      
+        //eraseMainScreen(ctx);
+
+        //ctx.font="16px Arial";
+        //ctx.fillStyle = "Red";
         
-        wrapText(ctx, backText, x, y, maxWidth, lineHeight);
+        //wrapText(ctx, backText, x, y, maxWidth, lineHeight);
         //ctx.fillText()
 
       //}
@@ -161,9 +198,9 @@ function wrapText(context, text, x, y, maxWidth, lineHeight) {
         <input type="button" value=" Battle " onclick="aWildAppears()">
     </div>
     <div style="position:relative; top:-100; left:200">
-        <input type="button" value=" Fight " onclick="incr()">
-        <input type="button" value=" Sneak " onclick="decr()">
-        <input type="button" value=" Psych " onclick="decr()">
+        <input type="button" value=" Fight " onclick="compareStats(enemy.might, slyvix.might)">
+        <input type="button" value=" Sneak " onclick="compareStats(enemy.stealth, slyvix.stealth)">
+        <input type="button" value=" Psych " onclick="compareStats(enemy.psych, slyvix.psych)">
     </div>
 
  </div>
