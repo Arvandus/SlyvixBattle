@@ -16,8 +16,8 @@ var battle = 0;
 var canvas, ctx, x, y, enemypool, maxWidth, lineHeight;  
 var enemy_pic = new Image();
 var slyvix_pic = new Image();
-var enemy = ["squigbomb","cat"];
-var ability = ["squigbomb","dog","cats","person"];
+var foe = ["squigbomb","ripper","mutineer"];
+var ability = ["shifty eyes","cowardice","madness","karoake skills"];
 var stat = ["Fight","Stealth","Psych"];
 
 //object determines Slyvix
@@ -32,7 +32,8 @@ var stat = ["Fight","Stealth","Psych"];
   might : 0,
   stealth : 0,
   psych : 0,
-  photo : "pics/SquigBomb.png"
+  name : "",
+  photo : ""
   }
 
 //initiates the screen for the canvas
@@ -43,6 +44,7 @@ function intit(){
         maxWidth = 400;
         lineHeight = 25;
         enemypool = 0;
+        battle = 0;
         x = (canvas.width - maxWidth) / 2;
           //main screen
         ctx.fillStyle = "White";
@@ -58,12 +60,20 @@ function intit(){
         wrapText(text);
 }
 
+function done(){
+  if (battle === 10){
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
 function eraseScreens(){
         // Main text screen
         ctx.fillStyle = "White";
         ctx.clearRect(50,25,500,200);
         ctx.fillRect(50,25,500,200);
-
 }
 
 function gameMain(){
@@ -109,14 +119,27 @@ function arrayRoll(x){
   return stuff;
 }
 
+function placePhoto(subject){
+   enemy.name = subject;
+if (subject === "squigbomb"){
+  enemy.photo = "pics/SquigBomb.png";
+}
+else if (subject === "mutineer") {
+enemy.photo = "pics/mutineer.jpg"; 
+}
+else
+enemy.photo = "pics/ripper.jpg";
+}
+
 function aWildAppears(){
-  var chosenEnemy = enemy[arrayRoll(enemy.length)];
+  var chosenFoe = foe[arrayRoll(foe.length)];
   var chosenAbility = ability[arrayRoll(ability.length)];
   var chosenStat = stat[arrayRoll(stat.length)];
+  placePhoto(chosenFoe);
   ctx.clearRect (425,250,125,125);
   enemy_pic.src = enemy.photo;
   ctx.drawImage(enemy_pic,425,250);
-  backText = "A wild " + chosenEnemy + " has appeared in front of slyvix." + "its " + chosenAbility + " makes it immune to " + chosenStat + "."
+  backText = "A wild " + chosenFoe + " has appeared in front of slyvix." + "its " + chosenAbility + " makes it immune to " + chosenStat + "." 
   wrapText(backText);
 }
 
@@ -171,7 +194,7 @@ function wrapText(text) {
         psych_button.onload = function() {
         ctx.drawImage(psych_button,275,350);
         }
-        */
+        */ 
 
 
         //display text on main screen
