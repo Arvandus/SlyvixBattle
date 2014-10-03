@@ -17,23 +17,25 @@ var canvas, ctx, x, y, enemypool, maxWidth, lineHeight;
 var enemy_pic = new Image();
 var slyvix_pic = new Image();
 var foe = ["squigbomb","ripper","mutineer"];
-var ability = ["shifty eyes","cowardice","madness","karoake skills"];
-var stat = ["Fight","Stealth","Psych"];
+var ability = ["shifty eyes","cowardice","madness","karoake skills","sarcasm","self-deprication","penetrating stare"];
+var stat = ["Fight","Sneak","Psych"];
 
 //object determines Slyvix
   var slyvix = {
-  might : 0,
-  stealth : 0,
-  psych : 0,
-  photo : "pics/SlyvixBest.jpg"
+  might : 1,
+  stealth : 1,
+  psych : 1,
+  photo : "pics/SlyvixBest.jpg",
+  pickedStat : ""
   }
 //object determines enemies
   var enemy = {
-  might : 0,
-  stealth : 0,
-  psych : 0,
+  might : 1,
+  stealth : 1,
+  psych : 1,
   name : "",
-  photo : ""
+  photo : "",
+  pickedStat : ""
   }
 
 //initiates the screen for the canvas
@@ -76,24 +78,42 @@ function eraseScreens(){
         ctx.fillRect(50,25,500,200);
 }
 
-function gameMain(){
-  while(battle <= 3){
-    aWildAppears();
-    battle++;
+function checkBattleStatus(){
+  
+  if (battle >= 10)
+  {
+    return true;
   }
+  else
+
+  return false;
+  
 }
 
 function compareStats(enemyStat, slyvixStat){
-if (enemyStat + diceRoll() === slyvixStat + diceRoll()){
-  text = "they are equal";
-}
-  else if (enemyStat + diceRoll() > slyvixStat + diceRoll()){
-    text = "EnemyStronger";
+  if(checkBattleStatus()){
   }
-  else{
-    text = "Slyvix wins"
+  else
+  {
+  var enemydie = diceRoll();
+  var slyvixdie = diceRoll();
+  var enemyCombo = enemyStat + enemydie;
+  var slyvixCombo = enemyStat + slyvixdie;
+
+if (enemyCombo === slyvixCombo)
+{
+  text = "The " + enemy.name + "'s stat of " + enemyStat + " plus a d6 roll of " + enemydie + " equals " + enemyCombo + " slyvix stat of " + slyvixStat + " plus her dice roll of " + slyvixdie + " equals " + slyvixCombo + " you are sadly evenly matched.";
+}
+  else if (enemyCombo > slyvixCombo)
+  {
+    text = "The " + enemy.name + "'s stat of " + enemyStat + " plus a d6 roll of " + enemydie + " equals " + enemyCombo + " slyvix stat of " + slyvixStat + " plus her dice roll of " + slyvixdie + " equals " + slyvixCombo + ". He is the stronger.";
+  }
+  else
+  {
+    text = "The " + enemy.name + "'s stat of " + enemyStat + " plus a d6 roll of " + enemydie + " equals " + enemyCombo + " slyvix stat of " + slyvixStat + " plus her dice roll of " + slyvixdie + " equals " + slyvixCombo + ". You are the stronger.";
   }
   wrapText(text);
+}
 }
 
 function raiseSlyvix( ) {
@@ -102,15 +122,27 @@ function raiseSlyvix( ) {
 }
 
 function createEnemyStats(){
+  //produce enemy stats
   enemy.might = 1;
   enemy.stealth = 1;
   enemy.psych = 1;
-
-  //produce enemy stats
+  for (i = 0; i <= battle; i++)
+  {
+  var randomNumber = Math.floor(Math.random() * 3) +1;
+  if (randomNumber === 1){
+    enemy.might = enemy.might + 1;
+  }
+  else if (randomNumber === 2){
+    enemy.stealth = enemy.stealth + 1;
+  }
+  else {
+    enemy.psych = enemy.psych + 1;
+  }
+  }
 }
 
 function diceRoll(){
-  var randomNumber = Math.floor(Math.random() * 5) +1;
+  var randomNumber = Math.floor(Math.random() * 6) +1;
   return randomNumber;
 }
 
@@ -132,15 +164,25 @@ enemy.photo = "pics/ripper.jpg";
 }
 
 function aWildAppears(){
+  if(checkBattleStatus()){
+    youWin();
+  }
+  else
+  {
+  createEnemyStats();
   var chosenFoe = foe[arrayRoll(foe.length)];
   var chosenAbility = ability[arrayRoll(ability.length)];
   var chosenStat = stat[arrayRoll(stat.length)];
   placePhoto(chosenFoe);
   ctx.clearRect (425,250,125,125);
   enemy_pic.src = enemy.photo;
+  enemy.name = chosenFoe;
   ctx.drawImage(enemy_pic,425,250);
-  backText = "A wild " + chosenFoe + " has appeared in front of slyvix." + "its " + chosenAbility + " makes it immune to " + chosenStat + "." 
+  enemy.pickedStat = chosenStat;
+  backText = "A wild " + chosenFoe + " has appeared in front of slyvix." + "its " + chosenAbility + " makes it immune to " + chosenStat + "." + " It has a Might of " + enemy.might + " A stealth of " + enemy.stealth + " and a psych of " + enemy.psych; 
   wrapText(backText);
+  battle++;
+}
 }
 
 //wraps text in box. allowing for paragraphs
@@ -168,46 +210,15 @@ function wrapText(text) {
         y = 60;
       }
 
+function youWin(){
+  var winText = "you have won ten battles" + " If you wish to restart, press battle again and see if you can survive";
+  wrapText(winText);
 
+}
 
 //draws the canvas
     function draw() {
       intit();
-      //wrapText(ctx, aWildAppears(), x, y, maxWidth, lineHeight);
-       // gameMain();
-
-        //Custom Buttons
-        //var fight_button = new Image();
-        //var stealth_button = new Image();
-        //var psych_button = new Image();
-        //fight_button.src = "pics/Fight_Button.png";
-        //stealth_button.src = "pics/Stealth_Button.png";
-        //psych_button.src = "pics/Psych_Button.png";
-        //load button images
-        /*
-        fight_button.onload = function() {
-        ctx.drawImage(fight_button,275,250);
-        }
-        stealth_button.onload = function() {
-        ctx.drawImage(stealth_button,275,300);
-        }
-        psych_button.onload = function() {
-        ctx.drawImage(psych_button,275,350);
-        }
-        */ 
-
-
-        //display text on main screen
-      
-        //eraseMainScreen(ctx);
-
-        //ctx.font="16px Arial";
-        //ctx.fillStyle = "Red";
-        
-        //wrapText(ctx, backText, x, y, maxWidth, lineHeight);
-        //ctx.fillText()
-
-      //}
     }
 
   </script>
@@ -217,7 +228,7 @@ function wrapText(text) {
    <canvas id="canvas" width="600"; height="400"; style= "border:1px 
    solid black; background-color:#0B0B3B; border-radius:25px;"></canvas>
 
-    <div style="position:relative; top:-100; left:260">
+    <div style="position:relative; top:-100; left:265">
         <input type="button" value=" Battle " onclick="aWildAppears()">
     </div>
     <div style="position:relative; top:-100; left:200">
