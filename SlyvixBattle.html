@@ -19,6 +19,7 @@ var slyvix_pic = new Image();
 var foe = ["squigbomb","ripper","mutineer"];
 var ability = ["shifty eyes","cowardice","madness","karoake skills","sarcasm","self-deprication","penetrating stare"];
 var stat = ["Fight","Sneak","Psych"];
+var acted;
 
 //object determines Slyvix
   var slyvix = {
@@ -26,16 +27,18 @@ var stat = ["Fight","Sneak","Psych"];
   stealth : 1,
   psych : 1,
   photo : "pics/SlyvixBest.jpg",
-  pickedStat : ""
+  pickedStat : "",
+  life : 0
   }
 //object determines enemies
   var enemy = {
-  might : 1,
-  stealth : 1,
-  psych : 1,
+  might : 0,
+  stealth : 0,
+  psych : 0,
   name : "",
   photo : "",
-  pickedStat : ""
+  pickedStat : "",
+  life : 0
   }
 
 //initiates the screen for the canvas
@@ -47,6 +50,7 @@ function intit(){
         lineHeight = 25;
         enemypool = 0;
         battle = 0;
+        acted = false;
         x = (canvas.width - maxWidth) / 2;
           //main screen
         ctx.fillStyle = "White";
@@ -58,8 +62,22 @@ function intit(){
         ctx.fillRect (425, 250, 125,125);
         ctx.font="16px Arial";
         ctx.fillStyle = "Red";
-        text = "Welcome to version .01 of Slyvix battle. A simple game you should be able to do in a few minutes. Each game, you will face a random enemy of the shadowlabyrinth as SLyvix. Good luck.";
+        text = "Welcome to version .01 of Slyvix battle. A simple game you should be able to do in a few minutes. Each game, you will face a random enemy of the shadow labyrinth as Slyvix. Good luck.";
         wrapText(text);
+        displaystats();
+
+}
+
+function displaystats(){
+ctx.font="12px Arial";
+ctx.fillStyle = "Red";
+ctx.fillText ("Fight " + slyvix.might, 50, 260);
+ctx.fillText ("Stealth " + slyvix.stealth, 50, 280);
+ctx.fillText ("Psyche " + slyvix.psych, 50, 300);
+
+ctx.fillText ("Fight " + enemy.might, 426, 260);
+ctx.fillText ("Stealth " + enemy.stealth, 426, 280);
+ctx.fillText ("Psyche " + enemy.psych, 426, 300);
 }
 
 function done(){
@@ -87,7 +105,10 @@ function checkBattleStatus(){
   else
 
   return false;
-  
+}
+
+function checkActed(){
+
 }
 
 function compareStats(enemyStat, slyvixStat){
@@ -116,9 +137,16 @@ if (enemyCombo === slyvixCombo)
 }
 }
 
-function raiseSlyvix( ) {
-//if certain stat clicked, raise stat by 1.
-// then clear stat list.
+function raiseSlyvixMight() {
+slyvix.might = slyvix.might + 1;
+}
+
+function raiseSlyvixStealth() {
+slyvix.stealth = slyvix.stealth + 1;
+}
+
+function raiseSlyvixPsych() {
+slyvix.psych = slyvix.psych + 1;
 }
 
 function createEnemyStats(){
@@ -150,6 +178,17 @@ function arrayRoll(x){
   var stuff = Math.floor(Math.random() * x);
   return stuff;
 }
+/*
+function confirmedActed(){
+
+  if (acted == true){
+    return true;
+    acted = false;
+  }
+  else 
+    return false;
+}
+*/
 
 function placePhoto(subject){
    enemy.name = subject;
@@ -178,6 +217,7 @@ function aWildAppears(){
   enemy_pic.src = enemy.photo;
   enemy.name = chosenFoe;
   ctx.drawImage(enemy_pic,425,250);
+  displaystats();
   enemy.pickedStat = chosenStat;
   backText = "A wild " + chosenFoe + " has appeared in front of slyvix." + "its " + chosenAbility + " makes it immune to " + chosenStat + "." + " It has a Might of " + enemy.might + " A stealth of " + enemy.stealth + " and a psych of " + enemy.psych; 
   wrapText(backText);
@@ -233,7 +273,7 @@ function youWin(){
     </div>
     <div style="position:relative; top:-100; left:200">
         <input type="button" value=" Fight " onclick="compareStats(enemy.might, slyvix.might)">
-        <input type="button" value=" Sneak " onclick="compareStats(enemy.stealth, slyvix.stealth)">
+        <input type="button" value=" Stealth " onclick="compareStats(enemy.stealth, slyvix.stealth)">
         <input type="button" value=" Psych " onclick="compareStats(enemy.psych, slyvix.psych)">
     </div>
 
