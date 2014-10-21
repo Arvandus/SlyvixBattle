@@ -111,7 +111,7 @@ function checkActed(){
 
 }
 
-function compareStats(enemyStat, slyvixStat){
+function compareStats(enemyStat, slyvixStat, chosenMethod){
   if(checkBattleStatus()){
   }
   else
@@ -133,21 +133,24 @@ if (enemyCombo === slyvixCombo)
   {
     text = "The " + enemy.name + "'s stat of " + enemyStat + " plus a d6 roll of " + enemydie + " equals " + enemyCombo + " slyvix stat of " + slyvixStat + " plus her dice roll of " + slyvixdie + " equals " + slyvixCombo + ". You are the stronger.";
   }
+  raiseSlyvix(chosenMethod);
+  ctx.drawImage(slyvix_pic,50,250);
+  displaystats();
   wrapText(text);
 }
 }
 
-function raiseSlyvixMight() {
-slyvix.might = slyvix.might + 1;
+function raiseSlyvix(chosenAbility){
+  if (chosenAbility === "might"){
+    slyvix.might = slyvix.might + 1;
+  }
+  else if (chosenAbility === "stealth"){
+    slyvix.stealth = slyvix.stealth + 1;
+  }
+  else
+    slyvix.psych = slyvix.psych + 1;
 }
 
-function raiseSlyvixStealth() {
-slyvix.stealth = slyvix.stealth + 1;
-}
-
-function raiseSlyvixPsych() {
-slyvix.psych = slyvix.psych + 1;
-}
 
 function createEnemyStats(){
   //produce enemy stats
@@ -272,9 +275,9 @@ function youWin(){
         <input type="button" value=" Battle " onclick="aWildAppears()">
     </div>
     <div style="position:relative; top:-100; left:200">
-        <input type="button" value=" Fight " onclick="compareStats(enemy.might, slyvix.might)">
-        <input type="button" value=" Stealth " onclick="compareStats(enemy.stealth, slyvix.stealth)">
-        <input type="button" value=" Psych " onclick="compareStats(enemy.psych, slyvix.psych)">
+        <input type="button" value=" Fight " onclick="compareStats(enemy.might, slyvix.might, 'might')">
+        <input type="button" value=" Stealth " onclick="compareStats(enemy.stealth, slyvix.stealth, 'stealth')">
+        <input type="button" value=" Psych " onclick="compareStats(enemy.psych, slyvix.psych,'psych')">
     </div>
 
  </div>
