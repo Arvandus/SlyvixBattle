@@ -106,13 +106,14 @@ function checkBattleStatus(){
 
   return false;
 }
-
+/*
 function checkActed(){
 
 }
-
+*/
 function compareStats(enemyStat, slyvixStat, chosenMethod){
-  if(checkBattleStatus()){
+  if(acted === true){
+    text = "you have already acted against this foe.";
   }
   else
   {
@@ -136,8 +137,9 @@ if (enemyCombo === slyvixCombo)
   raiseSlyvix(chosenMethod);
   ctx.drawImage(slyvix_pic,50,250);
   displaystats();
-  wrapText(text);
+  acted = true;
 }
+  wrapText(text);
 }
 
 function raiseSlyvix(chosenAbility){
@@ -209,6 +211,10 @@ function aWildAppears(){
   if(checkBattleStatus()){
     youWin();
   }
+  else if (acted === false)
+  {
+    backText = "you have not gone yet";
+  }
   else
   {
   createEnemyStats();
@@ -223,9 +229,10 @@ function aWildAppears(){
   displaystats();
   enemy.pickedStat = chosenStat;
   backText = "A wild " + chosenFoe + " has appeared in front of slyvix." + "its " + chosenAbility + " makes it immune to " + chosenStat + "." + " It has a Might of " + enemy.might + " A stealth of " + enemy.stealth + " and a psych of " + enemy.psych; 
-  wrapText(backText);
   battle++;
+  acted = false;
 }
+wrapText(backText);
 }
 
 //wraps text in box. allowing for paragraphs
